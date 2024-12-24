@@ -1,0 +1,121 @@
+[
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "pandas",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pandas",
+        "description": "pandas",
+        "detail": "pandas",
+        "documentation": {}
+    },
+    {
+        "label": "train_test_split",
+        "importPath": "sklearn.model_selection",
+        "description": "sklearn.model_selection",
+        "isExtraImport": true,
+        "detail": "sklearn.model_selection",
+        "documentation": {}
+    },
+    {
+        "label": "GaussianNB",
+        "importPath": "sklearn.naive_bayes",
+        "description": "sklearn.naive_bayes",
+        "isExtraImport": true,
+        "detail": "sklearn.naive_bayes",
+        "documentation": {}
+    },
+    {
+        "label": "accuracy_score",
+        "importPath": "sklearn.metrics",
+        "description": "sklearn.metrics",
+        "isExtraImport": true,
+        "detail": "sklearn.metrics",
+        "documentation": {}
+    },
+    {
+        "label": "load_and_split_dataset",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def load_and_split_dataset():\n    dataset = pd.read_csv(DATASET_PATH)\n    if len(dataset.columns) < 2:\n        raise ValueError(\"Dataset harus memiliki minimal dua kolom (fitur dan label).\")\n    X = dataset.iloc[:, :-1]\n    y = dataset.iloc[:, -1]\n    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n    return X_train, X_test, y_train, y_test\n# Halaman utama\n@app.route('/')",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "index",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def index():\n    return render_template('index.html')\n# Endpoint untuk melatih model\n@app.route('/train', methods=['POST'])\ndef train_model():\n    try:\n        X_train, X_test, y_train, y_test = load_and_split_dataset()\n        model = GaussianNB()\n        model.fit(X_train, y_train)\n        y_pred = model.predict(X_test)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "train_model",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def train_model():\n    try:\n        X_train, X_test, y_train, y_test = load_and_split_dataset()\n        model = GaussianNB()\n        model.fit(X_train, y_train)\n        y_pred = model.predict(X_test)\n        accuracy = accuracy_score(y_test, y_pred)\n        global trained_model\n        trained_model = model\n        return jsonify({\"message\": \"Model berhasil dilatih.\", \"accuracy\": accuracy}), 200",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "predict",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def predict():\n    try:\n        global trained_model\n        if trained_model is None:\n            return jsonify({\"error\": \"Model belum dilatih.\"}), 400\n        input_data = request.json\n        input_df = pd.DataFrame([input_data])\n        prediction = trained_model.predict(input_df)\n        return jsonify({\"prediction\": prediction[0]}), 200\n    except Exception as e:",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app = Flask(__name__)\n# Dataset bawaan\nDATASET_PATH = 'Dataset.csv'\n# Fungsi untuk memuat dan membagi dataset\ndef load_and_split_dataset():\n    dataset = pd.read_csv(DATASET_PATH)\n    if len(dataset.columns) < 2:\n        raise ValueError(\"Dataset harus memiliki minimal dua kolom (fitur dan label).\")\n    X = dataset.iloc[:, :-1]\n    y = dataset.iloc[:, -1]",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "DATASET_PATH",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "DATASET_PATH = 'Dataset.csv'\n# Fungsi untuk memuat dan membagi dataset\ndef load_and_split_dataset():\n    dataset = pd.read_csv(DATASET_PATH)\n    if len(dataset.columns) < 2:\n        raise ValueError(\"Dataset harus memiliki minimal dua kolom (fitur dan label).\")\n    X = dataset.iloc[:, :-1]\n    y = dataset.iloc[:, -1]\n    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n    return X_train, X_test, y_train, y_test",
+        "detail": "app",
+        "documentation": {}
+    }
+]
