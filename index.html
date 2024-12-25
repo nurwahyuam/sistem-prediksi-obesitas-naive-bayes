@@ -20,7 +20,7 @@
               d="M5 1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1a1 1 0 0 1 1 1v4h3a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h3V3a1 1 0 0 1 1-1zm2 14h2v-3H7zm3 0h1V3H5v12h1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1zm0-14H6v1h4zm2 7v7h3V8zm-8 7V8H1v7z"
             />
           </svg>
-          <p class="fw-bold mb-0">Naive Bayes Obesitas</p>
+          <p class="fw-bold mb-0 d-none d-md-block">Naive Bayes Obesitas</p>
         </div>
         <a href="dashboard.html" class="text-decoration-none">
           <button type="button" class="btn btn-primary">Dashboard</button>
@@ -35,11 +35,11 @@
         <fieldset class="mb-4">
           <legend class="fw-bold">Data Pribadi</legend>
           <div class="row d-flex">
-            <div class="col-4 mb-3">
+            <div class="col-md-4 mb-3">
               <label for="nama" class="form-label">Nama:</label>
               <input type="text" id="nama" class="form-control" placeholder="Masukkan nama lengkap" required />
             </div>
-            <div class="col-4 mb-3">
+            <div class="col-md-4 mb-3">
               <label for="jenisKelamin" class="form-label">Jenis Kelamin:</label>
               <select id="jenisKelamin" class="form-select" required>
                 <option value="">Pilih jenis kelamin</option>
@@ -47,7 +47,7 @@
                 <option value="P">Perempuan</option>
               </select>
             </div>
-            <div class="col-4 mb-3">
+            <div class="col-md-4 mb-3">
               <label for="usia" class="form-label">Usia:</label>
               <select id="usia" class="form-select" required>
                 <option value="">Pilih rentang usia</option>
@@ -61,7 +61,7 @@
         <fieldset class="mb-4">
           <legend class="fw-bold">Data Fisik</legend>
           <div class="row d-flex">
-            <div class="col-4 mb-3">
+            <div class="col-md-4 mb-3">
               <label for="tinggiBadan" class="form-label">Tinggi Badan:</label>
               <select id="tinggiBadan" class="form-select" required>
                 <option value="">Pilih tinggi badan</option>
@@ -70,7 +70,7 @@
                 <option value="Tinggi">166-178 cm</option>
               </select>
             </div>
-            <div class="col-4 mb-3">
+            <div class="col-md-4 mb-3">
               <label for="beratBadan" class="form-label">Berat Badan:</label>
               <select id="beratBadan" class="form-select" required>
                 <option value="">Pilih berat badan</option>
@@ -79,7 +79,7 @@
                 <option value="Berat">78-96 kg</option>
               </select>
             </div>
-            <div class="col-4 mb-3">
+            <div class="col-md-4 mb-3">
               <label for="lingkarPerut" class="form-label">Lingkar Perut:</label>
               <select id="lingkarPerut" class="form-select" required>
                 <option value="">Pilih lingkar perut</option>
@@ -93,7 +93,7 @@
         <fieldset class="mb-4">
           <legend class="fw-bold">Data Kebiasaan</legend>
           <div class="row d-flex">
-            <div class="col-4">
+            <div class="col-md-4">
               <div class="mb-3">
                 <label for="kurangAktifitas" class="form-label">Kekurangan Aktivitas Fisik:</label>
                 <select id="kurangAktifitas" class="form-select" required>
@@ -109,7 +109,7 @@
                 </select>
               </div>
             </div>
-            <div class="col-4">
+            <div class="col-md-4">
               <div class="mb-3">
                 <label for="gulaBerlebihan" class="form-label">Konsumsi Gula Berlebihan:</label>
                 <select id="gulaBerlebihan" class="form-select" required>
@@ -125,7 +125,7 @@
                 </select>
               </div>
             </div>
-            <div class="col-4">
+            <div class="col-md-4">
               <div class="mb-3">
                 <label for="lemakBerlebihan" class="form-label">Konsumsi Lemak Berlebihan</label>
                 <select id="lemakBerlebihan" class="form-select" required>
