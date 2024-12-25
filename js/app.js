@@ -128,6 +128,11 @@ function predictAndSave() {
   }
 
   document.getElementById("predictionResult").textContent = `Hasil prediksi: ${predictedClass}`;
+  
+  const storedData = JSON.parse(localStorage.getItem("userData")) || [];
+  formData.Prediksi = predictedClass;
+  storedData.push(formData);
+  localStorage.setItem("userData", JSON.stringify(storedData));
 
   const resultModal = new bootstrap.Modal(document.getElementById("resultModal"));
   resultModal.show();
