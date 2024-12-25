@@ -6,32 +6,30 @@ function loadDataset() {
   const datasetPath = "./js/Dataset.csv";
 
   fetch(datasetPath)
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error("Gagal memuat dataset.");
-    }
-    return response.text();
-  })
-  .then((csvText) => {
-    Papa.parse(csvText, {
-      header: true,
-      dynamicTyping: true,
-      complete: function (results) {
-        data = results.data.filter((row) =>
-          Object.values(row).some((val) => val !== null && val !== "")
-        );
-        if (data.length === 0) {
-          alert("Dataset kosong atau tidak valid.");
-          return;
-        }
-        displayData();
-      },
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Gagal memuat dataset.");
+      }
+      return response.text();
+    })
+    .then((csvText) => {
+      Papa.parse(csvText, {
+        header: true,
+        dynamicTyping: true,
+        complete: function (results) {
+          data = results.data.filter((row) => Object.values(row).some((val) => val !== null && val !== ""));
+          if (data.length === 0) {
+            alert("Dataset kosong atau tidak valid.");
+            return;
+          }
+          displayData();
+        },
+      });
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Dataset tidak dapat dimuat. Pastikan file Dataset.csv tersedia di direktori.");
     });
-  })
-  .catch((error) => {
-    console.error("Error:", error);
-    alert("Dataset tidak dapat dimuat. Pastikan file Dataset.csv tersedia di direktori.");
-  });
 }
 
 function displayData() {
@@ -54,9 +52,7 @@ function populateTable(tableId, rows) {
     return;
   }
 
-  const headers = Object.keys(rows[0]).filter(
-    (header) => header.toLowerCase() !== "pegawai"
-  );
+  const headers = Object.keys(rows[0]).filter((header) => header.toLowerCase() !== "pegawai");
   const headerRow = document.createElement("tr");
   headers.forEach((header) => {
     const th = document.createElement("th");
@@ -84,7 +80,7 @@ function showDatasetInfo() {
     return;
   }
 
-  const columnNames = Object.keys(data[0]).filter(col => col.toLowerCase() !== "pegawai");
+  const columnNames = Object.keys(data[0]).filter((col) => col.toLowerCase() !== "pegawai");
   const numRows = data.length;
   const columnInfo = columnNames.map((col) => {
     const numMissing = data.filter((row) => row[col] == null || row[col] === "").length;
@@ -106,49 +102,49 @@ ${columnInfo.map((col) => `- ${col.name}: ${numRows - col.missing} nilai, ${col.
 
 function calculateProbabilities() {
   if (data.length === 0) {
-      alert("Dataset kosong. Harap unggah file terlebih dahulu.");
-      return;
+    alert("Dataset kosong. Harap unggah file terlebih dahulu.");
+    return;
   }
 
   const trainingData = data.slice(0, Math.floor(data.length * 0.75));
   if (trainingData.length === 0) {
-      alert("Data training kosong.");
-      return;
+    alert("Data training kosong.");
+    return;
   }
 
   const targetColumn = "Diagnosa";
-  const featureColumns = Object.keys(trainingData[0]).filter(feature => feature.toLowerCase() !== "pegawai" && feature !== targetColumn);
+  const featureColumns = Object.keys(trainingData[0]).filter((feature) => feature.toLowerCase() !== "pegawai" && feature !== targetColumn);
 
   const classCounts = {};
   trainingData.forEach((row) => {
-      const target = row[targetColumn];
-      classCounts[target] = (classCounts[target] || 0) + 1;
+    const target = row[targetColumn];
+    classCounts[target] = (classCounts[target] || 0) + 1;
   });
 
   const totalTraining = trainingData.length;
-  priorProbabilities = {}; 
+  priorProbabilities = {};
   for (const [classValue, count] of Object.entries(classCounts)) {
-      priorProbabilities[classValue] = count / totalTraining;
+    priorProbabilities[classValue] = count / totalTraining;
   }
 
-  likelihoods = {}; 
+  likelihoods = {};
   featureColumns.forEach((feature) => {
-      likelihoods[feature] = {};
-      for (const classValue in classCounts) {
-          likelihoods[feature][classValue] = {};
-          const filteredData = trainingData.filter((row) => row[targetColumn] === classValue);
-          const totalForClass = filteredData.length;
+    likelihoods[feature] = {};
+    for (const classValue in classCounts) {
+      likelihoods[feature][classValue] = {};
+      const filteredData = trainingData.filter((row) => row[targetColumn] === classValue);
+      const totalForClass = filteredData.length;
 
-          const featureCounts = {};
-          filteredData.forEach((row) => {
-              const value = row[feature];
-              featureCounts[value] = (featureCounts[value] || 0) + 1;
-          });
+      const featureCounts = {};
+      filteredData.forEach((row) => {
+        const value = row[feature];
+        featureCounts[value] = (featureCounts[value] || 0) + 1;
+      });
 
-          for (const [value, count] of Object.entries(featureCounts)) {
-              likelihoods[feature][classValue][value] = count / totalForClass;
-          }
+      for (const [value, count] of Object.entries(featureCounts)) {
+        likelihoods[feature][classValue][value] = count / totalForClass;
       }
+    }
   });
 
   displayProbabilities(likelihoods, featureColumns, Object.keys(classCounts), priorProbabilities);
@@ -160,7 +156,7 @@ function displayProbabilities(likelihoods, features, classes, priors) {
   table.innerHTML = "";
 
   const headerRow = document.createElement("tr");
-  ["No" ,"Fitur", "Nilai", ...classes].forEach((header) => {
+  ["No", "Fitur", "Nilai", ...classes].forEach((header) => {
     const th = document.createElement("th");
     th.textContent = header;
     headerRow.appendChild(th);
@@ -178,12 +174,7 @@ function displayProbabilities(likelihoods, features, classes, priors) {
 
           const rowElement = document.createElement("tr");
 
-          const cells = [
-            i++,
-            feature,
-            value,
-            ...classes.map((cls) => (featureData[cls] && featureData[cls][value] ? featureData[cls][value].toFixed(4) : "-")),
-          ];
+          const cells = [i++, feature, value, ...classes.map((cls) => (featureData[cls] && featureData[cls][value] ? featureData[cls][value].toFixed(4) : "-"))];
 
           cells.forEach((cellValue) => {
             const cell = document.createElement("td");
@@ -198,7 +189,7 @@ function displayProbabilities(likelihoods, features, classes, priors) {
   });
 
   const priorRow = document.createElement("tr");
-  const priorCells = ["25", "Diagnosa", "Prior Probabilitas", ...classes.map(cls => priors[cls] ? priors[cls].toFixed(4) : "-")];
+  const priorCells = ["25", "Diagnosa", "Prior Probabilitas", ...classes.map((cls) => (priors[cls] ? priors[cls].toFixed(4) : "-"))];
   priorCells.forEach((cellValue) => {
     const cell = document.createElement("td");
     cell.textContent = cellValue;
@@ -209,7 +200,7 @@ function displayProbabilities(likelihoods, features, classes, priors) {
 
 function calculateDataTesting() {
   const table = document.getElementById("testingTableNaiveBayes");
-  table.innerHTML = ""; 
+  table.innerHTML = "";
 
   if (data.length === 0) {
     alert("Dataset kosong. Harap unggah file terlebih dahulu.");
@@ -225,9 +216,7 @@ function calculateDataTesting() {
   }
 
   const targetColumn = "Diagnosa";
-  const featureColumns = Object.keys(trainingData[0]).filter(
-    (feature) => feature.toLowerCase() !== "pegawai" && feature !== targetColumn
-  );
+  const featureColumns = Object.keys(trainingData[0]).filter((feature) => feature.toLowerCase() !== "pegawai" && feature !== targetColumn);
 
   const classCounts = {};
   trainingData.forEach((row) => {
@@ -264,11 +253,7 @@ function calculateDataTesting() {
   // Predict testing data
   let correctPredictions = 0;
 
-  const headers = [
-    ...featureColumns,
-    "Diagnosa Aktual",
-    "Diagnosa Naive Bayes",
-  ];
+  const headers = [...featureColumns, "Diagnosa Aktual", "Diagnosa Naive Bayes"];
   const headerRow = document.createElement("tr");
   headers.forEach((header) => {
     const th = document.createElement("th");
@@ -289,14 +274,12 @@ function calculateDataTesting() {
         if (likelihoods[feature][classValue][value] !== undefined) {
           probabilities[classValue] *= likelihoods[feature][classValue][value];
         } else {
-          probabilities[classValue] *= 0; 
+          probabilities[classValue] *= 0;
         }
       });
     }
 
-    const predictedClass = Object.keys(probabilities).reduce((a, b) =>
-      probabilities[a] > probabilities[b] ? a : b
-    );
+    const predictedClass = Object.keys(probabilities).reduce((a, b) => (probabilities[a] > probabilities[b] ? a : b));
 
     if (predictedClass === row[targetColumn]) {
       correctPredictions++;

@@ -28,7 +28,6 @@
       </div>
     </nav>
 
-
     <main class="container-fluid my-5">
       <div class="row mb-4 mx-5">
         <div class="col-12">
@@ -101,12 +100,7 @@
                 <button class="btn btn-success mb-3" onclick="viewStoredData()">Lihat Data Tersimpan</button>
                 <table id="storedDataTable" class="table table-hover table-striped"></table>
               </div>
-              <button
-                class="btn btn-danger mt-3"
-                onclick="if(confirm('Apakah Anda yakin ingin menghapus semua data?')) { localStorage.clear(); alert('Data tersimpan telah dihapus!'); }"
-              >
-                Reset Data
-              </button>
+              <button class="btn btn-danger mt-3" onclick="if(confirm('Apakah Anda yakin ingin menghapus semua data?')) { localStorage.clear(); alert('Data tersimpan telah dihapus!'); }">Reset Data</button>
             </div>
           </div>
         </div>

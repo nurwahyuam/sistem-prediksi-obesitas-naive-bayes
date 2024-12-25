@@ -6,10 +6,12 @@
 
 body {
   background-color: #f8f9fa;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
-tr, td, th {
+tr,
+td,
+th {
   padding: 4px 10px;
   font-size: 10px;
   text-align: center;

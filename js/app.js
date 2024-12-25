@@ -17,9 +17,7 @@ function loadDataset() {
         header: true,
         dynamicTyping: true,
         complete: function (results) {
-          data = results.data.filter((row) =>
-            Object.values(row).some((val) => val !== null && val !== "")
-          );
+          data = results.data.filter((row) => Object.values(row).some((val) => val !== null && val !== ""));
           calculateProbabilities();
           alert("Dataset berhasil dimuat dan probabilitas dihitung!");
         },
@@ -39,9 +37,7 @@ function calculateProbabilities() {
 
   const trainingData = data.slice(0, Math.floor(data.length * 0.75));
   const targetColumn = "Diagnosa";
-  const featureColumns = Object.keys(trainingData[0]).filter(
-    (key) => key !== targetColumn && key.toLowerCase() !== "pegawai"
-  );
+  const featureColumns = Object.keys(trainingData[0]).filter((key) => key !== targetColumn && key.toLowerCase() !== "pegawai");
 
   priorProbabilities = {};
   likelihoods = {};
@@ -61,14 +57,12 @@ function calculateProbabilities() {
       const classValue = row[targetColumn];
       const featureValue = row[feature];
       likelihoods[feature][classValue] = likelihoods[feature][classValue] || {};
-      likelihoods[feature][classValue][featureValue] =
-        (likelihoods[feature][classValue][featureValue] || 0) + 1;
+      likelihoods[feature][classValue][featureValue] = (likelihoods[feature][classValue][featureValue] || 0) + 1;
     });
     for (const classValue in likelihoods[feature]) {
       const total = priorProbabilities[classValue] * totalTraining;
       for (const featureValue in likelihoods[feature][classValue]) {
-        likelihoods[feature][classValue][featureValue] /=
-          total || 1e-6;
+        likelihoods[feature][classValue][featureValue] /= total || 1e-6;
       }
     }
   });
@@ -100,11 +94,7 @@ function predictAndSave() {
     probabilities[classValue] = priorProbabilities[classValue];
     for (const feature in formData) {
       const featureValue = formData[feature];
-      if (
-        likelihoods[feature] &&
-        likelihoods[feature][classValue] &&
-        likelihoods[feature][classValue][featureValue] !== undefined
-      ) {
+      if (likelihoods[feature] && likelihoods[feature][classValue] && likelihoods[feature][classValue][featureValue] !== undefined) {
         probabilities[classValue] *= likelihoods[feature][classValue][featureValue];
       } else {
         probabilities[classValue] *= epsilon;
@@ -117,10 +107,7 @@ function predictAndSave() {
     return;
   }
 
-  const predictedClass = Object.keys(probabilities).reduce(
-    (a, b) => (probabilities[a] > probabilities[b] ? a : b),
-    null
-  );
+  const predictedClass = Object.keys(probabilities).reduce((a, b) => (probabilities[a] > probabilities[b] ? a : b), null);
 
   if (!predictedClass) {
     alert("Gagal membuat prediksi. Periksa dataset dan input data.");
@@ -128,7 +115,7 @@ function predictAndSave() {
   }
 
   document.getElementById("predictionResult").textContent = `Hasil prediksi: ${predictedClass}`;
-  
+
   const storedData = JSON.parse(localStorage.getItem("userData")) || [];
   formData.Prediksi = predictedClass;
   storedData.push(formData);
