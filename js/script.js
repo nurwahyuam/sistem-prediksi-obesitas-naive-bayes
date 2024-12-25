@@ -3,31 +3,35 @@ let priorProbabilities = {};
 let likelihoods = {};
 
 function loadDataset() {
-  const datasetPath = "./Dataset.csv";
+  const datasetPath = "./js/Dataset.csv";
 
   fetch(datasetPath)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Gagal memuat dataset.");
-      }
-      return response.text();
-    })
-    .then((csvText) => {
-      Papa.parse(csvText, {
-        header: true,
-        dynamicTyping: true,
-        complete: function (results) {
-          data = results.data.filter((row) =>
-            Object.values(row).some((val) => val !== null && val !== "")
-          );
-          displayData();
-        },
-      });
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      alert("Dataset tidak dapat dimuat. Periksa file dataset di direktori.");
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error("Gagal memuat dataset.");
+    }
+    return response.text();
+  })
+  .then((csvText) => {
+    Papa.parse(csvText, {
+      header: true,
+      dynamicTyping: true,
+      complete: function (results) {
+        data = results.data.filter((row) =>
+          Object.values(row).some((val) => val !== null && val !== "")
+        );
+        if (data.length === 0) {
+          alert("Dataset kosong atau tidak valid.");
+          return;
+        }
+        displayData();
+      },
     });
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+    alert("Dataset tidak dapat dimuat. Pastikan file Dataset.csv tersedia di direktori.");
+  });
 }
 
 function displayData() {
@@ -39,11 +43,12 @@ function displayData() {
   populateTable("testingTable", testingData);
   calculateProbabilities();
   calculateDataTesting();
+  viewStoredData()
 }
 
 function populateTable(tableId, rows) {
   const table = document.getElementById(tableId);
-  table.innerHTML = ""; // Clear table
+  table.innerHTML = "";
 
   if (rows.length === 0) {
     table.innerHTML = "<tr><td colspan='100%'>Tidak ada data</td></tr>";
@@ -154,10 +159,11 @@ function calculateProbabilities() {
 
 function displayProbabilities(likelihoods, features, classes, priors) {
   const table = document.getElementById("probabilitiesTable");
+  let i = 1;
   table.innerHTML = "";
 
   const headerRow = document.createElement("tr");
-  ["Fitur", "Nilai", ...classes].forEach((header) => {
+  ["No" ,"Fitur", "Nilai", ...classes].forEach((header) => {
     const th = document.createElement("th");
     th.textContent = header;
     headerRow.appendChild(th);
@@ -176,6 +182,7 @@ function displayProbabilities(likelihoods, features, classes, priors) {
           const rowElement = document.createElement("tr");
 
           const cells = [
+            i++,
             feature,
             value,
             ...classes.map((cls) => (featureData[cls] && featureData[cls][value] ? featureData[cls][value].toFixed(4) : "-")),
@@ -195,7 +202,7 @@ function displayProbabilities(likelihoods, features, classes, priors) {
 
   // Display prior probabilities
   const priorRow = document.createElement("tr");
-  const priorCells = ["Diagnosa", "Prior Probabilitas", ...classes.map(cls => priors[cls] ? priors[cls].toFixed(4) : "-")];
+  const priorCells = ["25", "Diagnosa", "Prior Probabilitas", ...classes.map(cls => priors[cls] ? priors[cls].toFixed(4) : "-")];
   priorCells.forEach((cellValue) => {
     const cell = document.createElement("td");
     cell.textContent = cellValue;
@@ -264,7 +271,6 @@ function calculateDataTesting() {
   let correctPredictions = 0;
 
   const headers = [
-    "Pegawai",
     ...featureColumns,
     "Diagnosa Aktual",
     "Diagnosa Naive Bayes",
@@ -326,63 +332,6 @@ function calculateDataTesting() {
   } else {
     accuracyElement.textContent = `Akurasi: ${accuracy.toFixed(2)}% (${correctPredictions}/${testingData.length})`;
   }
-}
-
-function predictAndSave() {
-  const formData = {
-      Nama: document.getElementById("nama").value,
-      JenisKelamin: document.getElementById("jenisKelamin").value,
-      Usia: document.getElementById("usia").value,
-      TinggiBadan: document.getElementById("tinggiBadan").value,
-      BeratBadan: document.getElementById("beratBadan").value,
-      LingkarPerut: document.getElementById("lingkarPerut").value,
-      KurangAktifitas: document.getElementById("kurangAktifitas").value,
-      GulaBerlebihan: document.getElementById("gulaBerlebihan").value,
-      GaramBerlebihan: document.getElementById("garamBerlebihan").value,
-      LemakBerlebihan: document.getElementById("lemakBerlebihan").value,
-      KurangBuahSayur: document.getElementById("kurangBuahSayur").value,
-  };
-
-  // Validasi jika form kosong
-  if (!Object.values(formData).every((value) => value !== "")) {
-      alert("Harap lengkapi semua field sebelum melakukan prediksi!");
-      return;
-  }
-
-  const probabilities = {};
-
-  for (const classValue in priorProbabilities) {
-      probabilities[classValue] = priorProbabilities[classValue];
-
-      for (const feature in formData) {
-          if (
-              feature !== "Nama" &&
-              likelihoods[feature] &&
-              likelihoods[feature][classValue]
-          ) {
-              const value = formData[feature];
-              probabilities[classValue] *= likelihoods[feature][classValue][value] || 0; // Handle missing likelihood
-          }
-      }
-  }
-
-  const predictedClass = Object.keys(probabilities).reduce((a, b) =>
-      probabilities[a] > probabilities[b] ? a : b
-  );
-
-  if (!predictedClass) {
-      alert("Prediksi gagal dilakukan. Harap periksa kembali input dan data training.");
-      return;
-  }
-
-  document.getElementById("predictionResult").textContent = `Prediksi: ${predictedClass}`;
-
-  const storedData = JSON.parse(localStorage.getItem("userData")) || [];
-  formData.Prediksi = predictedClass;
-  storedData.push(formData);
-  localStorage.setItem("userData", JSON.stringify(storedData));
-
-  alert(`Data berhasil disimpan dengan prediksi: ${predictedClass}`);
 }
 
 function viewStoredData() {

@@ -5,13 +5,46 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
-
-  line-height: 1.6;
-  padding: 20px;
+  background-color: #f8f9fa;
+  font-family: 'Roboto', sans-serif;
 }
 
 tr, td, th {
-  font-size: 8px;
+  padding: 4px 10px;
+  font-size: 10px;
   text-align: center;
+  text-wrap: break-word;
+}
+h3 {
+  font-weight: bold;
+}
+.navbar {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.card {
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+}
+.card-header {
+  background-image: linear-gradient(to right, #4facfe, #00f2fe);
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.btn-primary {
+  background-color: #4facfe;
+  border: none;
+}
+.btn-primary:hover {
+  background-color: #00c9fe;
+}
+.table {
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+#accuracy {
+  font-size: 1.5rem;
+  color: #28a745;
 }
