@@ -43,7 +43,6 @@ function displayData() {
   populateTable("testingTable", testingData);
   calculateProbabilities();
   calculateDataTesting();
-  viewStoredData()
 }
 
 function populateTable(tableId, rows) {
@@ -55,7 +54,6 @@ function populateTable(tableId, rows) {
     return;
   }
 
-  // Add headers
   const headers = Object.keys(rows[0]).filter(
     (header) => header.toLowerCase() !== "pegawai"
   );
@@ -67,7 +65,6 @@ function populateTable(tableId, rows) {
   });
   table.appendChild(headerRow);
 
-  // Add rows
   rows.forEach((row) => {
     const rowElement = document.createElement("tr");
     headers.forEach((header) => {
@@ -129,12 +126,12 @@ function calculateProbabilities() {
   });
 
   const totalTraining = trainingData.length;
-  priorProbabilities = {}; // Update global variable
+  priorProbabilities = {}; 
   for (const [classValue, count] of Object.entries(classCounts)) {
       priorProbabilities[classValue] = count / totalTraining;
   }
 
-  likelihoods = {}; // Update global variable
+  likelihoods = {}; 
   featureColumns.forEach((feature) => {
       likelihoods[feature] = {};
       for (const classValue in classCounts) {
@@ -200,7 +197,6 @@ function displayProbabilities(likelihoods, features, classes, priors) {
     });
   });
 
-  // Display prior probabilities
   const priorRow = document.createElement("tr");
   const priorCells = ["25", "Diagnosa", "Prior Probabilitas", ...classes.map(cls => priors[cls] ? priors[cls].toFixed(4) : "-")];
   priorCells.forEach((cellValue) => {
@@ -213,7 +209,7 @@ function displayProbabilities(likelihoods, features, classes, priors) {
 
 function calculateDataTesting() {
   const table = document.getElementById("testingTableNaiveBayes");
-  table.innerHTML = ""; // Clear the table
+  table.innerHTML = ""; 
 
   if (data.length === 0) {
     alert("Dataset kosong. Harap unggah file terlebih dahulu.");
@@ -233,7 +229,6 @@ function calculateDataTesting() {
     (feature) => feature.toLowerCase() !== "pegawai" && feature !== targetColumn
   );
 
-  // Calculate prior probabilities
   const classCounts = {};
   trainingData.forEach((row) => {
     const target = row[targetColumn];
@@ -246,7 +241,6 @@ function calculateDataTesting() {
     priorProbabilities[classValue] = count / totalTraining;
   }
 
-  // Calculate likelihoods
   const likelihoods = {};
   featureColumns.forEach((feature) => {
     likelihoods[feature] = {};
@@ -295,7 +289,7 @@ function calculateDataTesting() {
         if (likelihoods[feature][classValue][value] !== undefined) {
           probabilities[classValue] *= likelihoods[feature][classValue][value];
         } else {
-          probabilities[classValue] *= 0; // Handle missing likelihood
+          probabilities[classValue] *= 0; 
         }
       });
     }
@@ -323,7 +317,6 @@ function calculateDataTesting() {
     table.appendChild(rowElement);
   });
 
-  // Calculate and display accuracy
   const accuracy = (correctPredictions / testingData.length) * 100;
   const accuracyElement = document.getElementById("accuracy");
 
@@ -344,7 +337,6 @@ function viewStoredData() {
     return;
   }
 
-  // Add headers
   const headers = Object.keys(storedData[0]);
   const headerRow = document.createElement("tr");
   headers.forEach((header) => {
@@ -354,7 +346,6 @@ function viewStoredData() {
   });
   table.appendChild(headerRow);
 
-  // Add rows
   storedData.forEach((row) => {
     const rowElement = document.createElement("tr");
     headers.forEach((header) => {

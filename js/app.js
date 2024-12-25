@@ -46,7 +46,6 @@ function calculateProbabilities() {
   priorProbabilities = {};
   likelihoods = {};
 
-  // Hitung prior probabilities
   trainingData.forEach((row) => {
     const target = row[targetColumn];
     priorProbabilities[target] = (priorProbabilities[target] || 0) + 1;
@@ -56,7 +55,6 @@ function calculateProbabilities() {
     priorProbabilities[classValue] /= totalTraining;
   }
 
-  // Hitung likelihoods
   featureColumns.forEach((feature) => {
     likelihoods[feature] = {};
     trainingData.forEach((row) => {
@@ -70,7 +68,7 @@ function calculateProbabilities() {
       const total = priorProbabilities[classValue] * totalTraining;
       for (const featureValue in likelihoods[feature][classValue]) {
         likelihoods[feature][classValue][featureValue] /=
-          total || 1e-6; // Handle divide by zero
+          total || 1e-6;
       }
     }
   });
@@ -97,7 +95,7 @@ function predictAndSave() {
   }
 
   const probabilities = {};
-  const epsilon = 1e-6; // Untuk menangani kasus probabilitas nol
+  const epsilon = 1e-6;
   for (const classValue in priorProbabilities) {
     probabilities[classValue] = priorProbabilities[classValue];
     for (const feature in formData) {
@@ -109,7 +107,7 @@ function predictAndSave() {
       ) {
         probabilities[classValue] *= likelihoods[feature][classValue][featureValue];
       } else {
-        probabilities[classValue] *= epsilon; // Tangani kasus probabilitas nol
+        probabilities[classValue] *= epsilon;
       }
     }
   }
@@ -131,7 +129,6 @@ function predictAndSave() {
 
   document.getElementById("predictionResult").textContent = `Hasil prediksi: ${predictedClass}`;
 
-  // Tampilkan modal hasil
   const resultModal = new bootstrap.Modal(document.getElementById("resultModal"));
   resultModal.show();
 }
@@ -145,5 +142,4 @@ function validateForm(formData) {
   return true;
 }
 
-// Tambahkan event listener untuk memuat dataset saat halaman selesai dimuat
 document.addEventListener("DOMContentLoaded", loadDataset);
